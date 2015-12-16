@@ -1,2 +1,8 @@
 *.user
 *.o
+udp_client
+udp_server
+moc_*
+tcp_client
+tcp_server
+Makefile

@@ -7,7 +7,6 @@
 #include <string.h>
 
 #define MAXLINE 80
-#define SERV_PORT 8888
 
 void do_echo(int sockfd, struct sockaddr *pcliaddr, socklen_t clilen)
 {
@@ -34,8 +33,14 @@ void do_echo(int sockfd, struct sockaddr *pcliaddr, socklen_t clilen)
     }
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
+    /* check args */
+    if(argc != 2)
+    {
+        printf("usage: udp_server port\n");
+        exit(1);
+    }
     int sockfd;
     struct sockaddr_in servaddr, cliaddr;
 
@@ -45,7 +50,7 @@ int main(void)
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    servaddr.sin_port = htons(SERV_PORT);
+    servaddr.sin_port = htons(atoi(argv[1]));
 
     /* bind address and port to socket */
     if(bind(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) == -1)

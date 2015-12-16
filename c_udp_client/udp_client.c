@@ -8,7 +8,6 @@
 #include <unistd.h>
 
 #define MAXLINE 80
-#define SERV_PORT 8888
 
 void do_cli(FILE *fp, int sockfd, struct sockaddr *pservaddr, socklen_t servlen)
 {
@@ -44,19 +43,19 @@ int main(int argc, char **argv)
     struct sockaddr_in servaddr;
 
     /* check args */
-    if(argc != 2)
+    if(argc != 3)
     {
-        printf("usage: udpclient <IPaddress>/n");
+        printf("usage: udp_client ip port\n");
         exit(1);
     }
 
     /* init servaddr */
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(SERV_PORT);
+    servaddr.sin_port = htons(atoi(argv[2]));
     if(inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0)
     {
-        printf("[%s] is not a valid IPaddress/n", argv[1]);
+        printf("[%s] is not a valid IPaddress\n", argv[1]);
         exit(1);
     }
 

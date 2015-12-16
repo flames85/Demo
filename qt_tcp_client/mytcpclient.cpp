@@ -16,9 +16,9 @@ MyTcpClient::MyTcpClient(qint32 nIndex, QObject *parent) :
 void MyTcpClient::TriggerWrite()
 {
     QString strData;
-    strData = QString("Hello I am No.%1").arg(m_nClientIndex);
-    this->write(strData.toLatin1());
-    qDebug() << "send:" << strData;
+    //strData = QString("Hello I am No.%1").arg(m_nClientIndex);
+    //this->write(strData.toLatin1());
+    //qDebug() << "send:" << strData;
 
     if(!m_timer->isActive())
         m_timer->start(2000);
@@ -41,10 +41,11 @@ MyStart::MyStart(QObject *parent):
 
 
 void MyStart::Start() {
-    for(qint32 nIndex = 0; nIndex < 1024; nIndex++)
+    for(qint32 nIndex = 0; nIndex < 5000; nIndex++)
     {
         MyTcpClient *client = new MyTcpClient(nIndex);
-        client->connectToHost(QHostAddress("127.0.0.1"), 1234);
+        client->connectToHost(QHostAddress("127.0.0.1"), 12345);
+		qDebug() << "client:" << nIndex;
     }
 }
 

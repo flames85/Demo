@@ -1,8 +1,10 @@
 #include <iostream>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
+#include <boost/asio.hpp>
 
 using namespace std;
+using namespace boost::asio;
 
 class Downloader
 {
@@ -19,6 +21,12 @@ public:
         m_thread->interrupt();
     }
     int get_percent() { return m_percent; }
+
+    void do_get_message(const std::string& msg)
+    {
+        std::cout << "do get message " << msg << std::endl;
+    }
+
 private:
     void download()
     {
@@ -50,19 +58,30 @@ private:
 
 int main(int argc, char* argv[])
 {
+    //建立io服务
+    io_service iosev;
+
     cout << "要开始下载文件吗？" << endl;
     char ch;
     if (cin >> ch && ch == 'y')
     {
-        Downloader d;
-        d.start();
+        Downloader download;
+        download.start();
+
+        //异步消息
+        iosev.post(boost::bind(&Downloader::do_get_message, &download, "Hello1"));
+        iosev.run(); // run函数会立即退出， 因为io_service::post消息投递完以后已经没有别的事件可能需要执行
+
         cout << "已经开始下载" << endl;
         cout << "要停止吗？" << endl;
         if (cin >> ch && ch == 'y')
         {
-            d.stop();
+            download.stop();
         }
-        cout << "已经下载了%" << d.get_percent() << endl;
+        cout << "已经下载了%" << download.get_percent() << endl;
+
+
+
         sleep(10000);
     }
     return 0;

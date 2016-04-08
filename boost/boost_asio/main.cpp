@@ -52,6 +52,9 @@ class Service
             std::cout<< "发送失败!" << std::endl;
         else
             std::cout<< *pstr << " 已发送" << std::endl;
+
+        //异步消息
+        m_iosev.post(boost::bind(&Service::do_get_message, this, "write_handler"));
     }
 
     void do_get_message(const std::string& msg)
@@ -67,7 +70,7 @@ class Service
 
 int main(int argc, char* argv[])
 {
-    //建立io服务器
+    //建立io服务
     io_service iosev;
 
     Service sev(iosev);
@@ -78,7 +81,8 @@ int main(int argc, char* argv[])
     //异步消息
     iosev.post(boost::bind(&Service::do_get_message, &sev, "Hello"));
 
-    //开始执行回调函数
+    //开始执行回调函数, 只要io_service内无需要等待的执行的事务，run函数会退出，即所有事件循环结束
+    //因为此时一致有m_acceptor和psocket在占用着io_service, 所以run函数一直不会退出。那么只要在这个期间，调用io_service::post都是可行的。
     iosev.run();
 
     return 0;

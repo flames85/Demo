@@ -80,8 +80,6 @@ int main(int argc, char* argv[])
         }
         cout << "已经下载了%" << download.get_percent() << endl;
 
-
-
         sleep(10000);
     }
     return 0;
